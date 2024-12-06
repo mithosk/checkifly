@@ -5,8 +5,16 @@
         "outDir": "dist",
         "strict": true,
         "sourceMap": false,
-        "declaration": true,
-        "removeComments": true
+        "declaration": false,
+        "removeComments": true,
+        "paths": {
+            "@library": [
+                "./src/library"
+            ],
+            "@mongoose": [
+                "./src/mongoose"
+            ]
+        }
     },
     "include": [
         "src/**/*"
