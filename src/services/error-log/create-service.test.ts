@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid'
 import { IErrorLogMap } from './mapper'
 import { createCreateService, ICreateService } from './create-service'
 import { IErrorLogRepository, TErrorLogEntity } from './repositories/error-log-repository'
@@ -13,42 +14,49 @@ describe('errorLog', () => {
                 create: jest.fn()
             }
 
-            errorLogMap = jest.fn()
+            errorLogMap = jest.fn().mockReturnValue({
+                id: uuid(),
+                projectId: uuid(),
+                groupingName: 'aaaaa',
+                stackTrace: 'bbbbb',
+                level: 'HIGH',
+                details: []
+            })
 
             service = createCreateService(errorLogRepository, errorLogMap)
         })
 
         const errorLogFake: TErrorLogEntity = {
-            id: 'aaaaa',
-            projectId: 'bbbbb',
-            groupingName: 'ccccc',
-            stackTrace: 'ddddd',
-            level: 'LOW',
+            id: uuid(),
+            projectId: uuid(),
+            groupingName: 'aaaaa',
+            stackTrace: 'bbbbb',
+            level: 'HIGH',
             details: [
+                {
+                    name: 'ccccc',
+                    value: 'ddddd'
+                },
                 {
                     name: 'eeeee',
                     value: 'fffff'
-                },
-                {
-                    name: 'ggggg',
-                    value: 'hhhhh'
                 }
             ]
         }
 
         it('creates a new error log', async () => {
-            const projectId = 'aaaaa'
-            const groupingName = 'bbbbb'
-            const stackTrace = 'ccccc'
-            const level = 'LOW'
+            const projectId = uuid()
+            const groupingName = 'aaaaa'
+            const stackTrace = 'bbbbb'
+            const level = 'HIGH'
             const details = [
                 {
-                    name: 'ddddd',
-                    value: 'eeeee'
+                    name: 'ccccc',
+                    value: 'ddddd'
                 },
                 {
-                    name: 'fffff',
-                    value: 'ggggg'
+                    name: 'eeeee',
+                    value: 'fffff'
                 }
             ]
 
@@ -74,24 +82,45 @@ describe('errorLog', () => {
             errorLogRepository.create.mockResolvedValueOnce(errorLogFake)
 
             await service({
-                projectId: 'xxxxx',
-                groupingName: 'yyyyy',
-                stackTrace: 'zzzzz',
-                level: 'LOW',
+                projectId: uuid(),
+                groupingName: 'aaaaa',
+                stackTrace: 'bbbbb',
+                level: 'HIGH',
                 details: [
                     {
-                        name: 'kkkkk',
-                        value: 'wwwww'
+                        name: 'ccccc',
+                        value: 'ddddd'
                     },
                     {
-                        name: 'jjjjj',
-                        value: 'qqqqq'
+                        name: 'eeeee',
+                        value: 'fffff'
                     }
                 ]
             })
 
             expect(errorLogMap).toHaveBeenCalledTimes(1)
             expect(errorLogMap).toHaveBeenCalledWith(errorLogFake)
+        })
+
+        it('returns mapped result', async () => {
+            const result = await service({
+                projectId: uuid(),
+                groupingName: 'aaaaa',
+                stackTrace: 'bbbbb',
+                level: 'HIGH',
+                details: [
+                    {
+                        name: 'ccccc',
+                        value: 'ddddd'
+                    },
+                    {
+                        name: 'eeeee',
+                        value: 'fffff'
+                    }
+                ]
+            })
+
+            expect(result).toEqual(errorLogMap(errorLogFake))
         })
     })
 })

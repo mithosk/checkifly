@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid'
 import { TErrorLog } from '@mongoose'
 import { IMongooseModel } from '@library'
 import { mockDeep, mockReset } from 'jest-mock-extended'
@@ -10,24 +11,23 @@ describe('errorLog', () => {
 
 		beforeEach(() => {
 			mockReset(errorLogModel)
-
 			repository = new ErrorLogRepository(errorLogModel)
 		})
 
 		describe('create', () => {
 			it('creates a new error log', async () => {
-				const projectId = 'aaaaa'
-				const groupingName = 'bbbbb'
-				const stackTrace = 'ccccc'
+				const projectId = uuid()
+				const groupingName = 'aaaaa'
+				const stackTrace = 'bbbbb'
 				const level = 'LOW'
 				const details = [
 					{
-						name: 'ddddd',
-						value: 'eeeee'
+						name: 'ccccc',
+						value: 'ddddd'
 					},
 					{
-						name: 'fffff',
-						value: 'ggggg'
+						name: 'eeeee',
+						value: 'fffff'
 					}
 				]
 

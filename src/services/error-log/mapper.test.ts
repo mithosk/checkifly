@@ -1,22 +1,23 @@
+import { v4 as uuid } from 'uuid'
 import { errorLogMap } from './mapper'
 import { TErrorLogEntity } from './repositories/error-log-repository'
 
 describe('errorLog', () => {
 	describe('errorLogMap', () => {
 		const errorLogFake: TErrorLogEntity = {
-			id: 'aaaaa',
-			projectId: 'bbbbb',
-			groupingName: 'ccccc',
-			stackTrace: 'ddddd',
-			level: 'LOW',
+			id: uuid(),
+			projectId: uuid(),
+			groupingName: 'aaaaa',
+			stackTrace: 'bbbbb',
+			level: 'MEDIUM',
 			details: [
+				{
+					name: 'ccccc',
+					value: 'ddddd'
+				},
 				{
 					name: 'eeeee',
 					value: 'fffff'
-				},
-				{
-					name: 'ggggg',
-					value: 'hhhhh'
 				}
 			]
 		}
