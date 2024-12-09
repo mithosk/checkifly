@@ -26,6 +26,10 @@ services:
     ports: 
       - 5004:5004
     restart: always
+    environment:
+      PORT: 5004
+      API_KEY: d06668cb-d50c-4732-ac5f-b0275acecbf2
+      DATABASE_URL: mongodb://admin:admin@database:27017
 
 volumes:
   db:

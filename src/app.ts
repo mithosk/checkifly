@@ -8,6 +8,7 @@ dotenv.config()
 
 //settings
 const server = fastify()
+server.register(import('./utilities'))
 server.register(import('./services'))
 server.register(import('./routes'))
 
@@ -16,11 +17,11 @@ server.listen({
 	host: '0.0.0.0',
 	port: parseInt(getEnvParam('PORT'))
 }, () => {
-	console.log('Application STARTED...')
+	console.log('Application STARTED')
 
 	mongoose.connect(getEnvParam('DATABASE_URL'), {
 		dbName: 'checkyfly'
 	}).then(() => {
-		console.log('Application CONNECTED to MongoDB...')
+		console.log('Application CONNECTED to MongoDB')
 	})
 })

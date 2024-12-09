@@ -1,10 +1,6 @@
-type ParamKey = 'PORT' | 'DATABASE_URL'
+type ParamKey = 'PORT' | 'API_KEY' | 'DATABASE_URL'
 
-export interface IGetEnvParam {
-    (key: ParamKey): string
-}
-
-export const getEnvParam: IGetEnvParam = (key: ParamKey) => {
+export const getEnvParam = (key: ParamKey) => {
     const value = process.env[key]
 
     if (!value)

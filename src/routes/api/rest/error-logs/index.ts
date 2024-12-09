@@ -9,7 +9,8 @@ const errorLogsRoute: FastifyPluginAsync = async server => {
 				response: {
 					201: errorLogSchema
 				}
-			}
+			},
+			preValidation: server.apiKeyAuth()
 		},
 		async (request, response) =>
 			response.status(201).send(
