@@ -11,7 +11,9 @@ describe('errorLog', () => {
 
         beforeEach(() => {
             errorLogRepository = {
-                create: jest.fn()
+                create: jest.fn(),
+                findMany: jest.fn(),
+                count: jest.fn()
             }
 
             errorLogMap = jest.fn().mockReturnValue({
