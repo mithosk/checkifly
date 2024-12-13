@@ -22,7 +22,7 @@ services:
       ME_CONFIG_MONGODB_SERVER: database
     
   application:
-    build: .
+    build: ./backend
     ports: 
       - 5004:5004
     restart: always
@@ -30,6 +30,12 @@ services:
       PORT: 5004
       API_KEY: d06668cb-d50c-4732-ac5f-b0275acecbf2
       DATABASE_URL: mongodb://admin:admin@database:27017
+
+  frontend:
+    build: ./frontend
+    ports: 
+      - 3000:3000
+    restart: always
 
 volumes:
   db:
