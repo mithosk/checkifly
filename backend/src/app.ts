@@ -1,6 +1,7 @@
 import fastify from 'fastify'
 import mongoose from 'mongoose'
 import * as dotenv from 'dotenv'
+import cors from '@fastify/cors'
 import { getEnvParam } from '@library'
 
 //load env
@@ -11,6 +12,7 @@ const server = fastify()
 server.register(import('./utilities'))
 server.register(import('./services'))
 server.register(import('./routes'))
+server.register(cors)
 
 //startup
 server.listen({
