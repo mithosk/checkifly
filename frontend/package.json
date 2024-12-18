@@ -13,9 +13,9 @@
     "typescript": "5.7.2"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 4200",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3200",
     "lint": "next lint"
   }
 }

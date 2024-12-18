@@ -1,6 +1,6 @@
 services:
   database:
-    image: mongo:latest
+    image: mongo:8.0.4-noble
     ports:
       - 27017:27017
     environment:
@@ -9,32 +9,25 @@ services:
     volumes: 
       - db:/var/lib/mongo/data
     restart: always
-
-  dbmanager:
-    image: mongo-express
-    ports:
-      - "8081:8081"
-    environment:
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: admin
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
-      ME_CONFIG_MONGODB_SERVER: database
     
-  application:
-    build: ./backend
+  backend:
+    build: 
+      context: ./backend
     ports: 
-      - 5004:5004
-    restart: always
+      - 3100:3100
     environment:
-      PORT: 5004
+      PORT: 3100
       API_KEY: d06668cb-d50c-4732-ac5f-b0275acecbf2
       DATABASE_URL: mongodb://admin:admin@database:27017
+    restart: always
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      args:
+        BACKEND_URL: http://localhost:3100
     ports: 
-      - 3000:3000
+      - 3200:3200
     restart: always
 
 volumes:
