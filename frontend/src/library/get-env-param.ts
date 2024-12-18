@@ -1,6 +1,6 @@
-type ParamKey = 'NEXT_PUBLIC_BACKEND_URL'
+type TParamKey = 'NEXT_PUBLIC_BACKEND_URL'
 
-export const getEnvParam = (key: ParamKey) => {
+export const getEnvParam = (key: TParamKey) => {
     let value: string | undefined = undefined
 
     switch (key) {
