@@ -1,8 +1,16 @@
 import { FastifyPluginAsync } from 'fastify'
-import { errorLogsSchema, TErrorLogsDto, errorLogListParamsSchema, TErrorLogListParamsDto, TErrorLogQuerystringDto, errorLogQuerystringSchema } from './dto'
+import {
+	errorLogsSchema,
+	TErrorLogsDto,
+	errorLogListParamsSchema,
+	TErrorLogListParamsDto,
+	TErrorLogQuerystringDto,
+	errorLogQuerystringSchema
+} from './dto'
 
 const errorLogsRoute: FastifyPluginAsync = async server => {
-	server.get<{ Params: TErrorLogListParamsDto, Querystring: TErrorLogQuerystringDto, Reply: TErrorLogsDto }>('/',
+	server.get<{ Params: TErrorLogListParamsDto; Querystring: TErrorLogQuerystringDto; Reply: TErrorLogsDto }>(
+		'/',
 		{
 			schema: {
 				params: errorLogListParamsSchema,
@@ -12,7 +20,7 @@ const errorLogsRoute: FastifyPluginAsync = async server => {
 				}
 			}
 		},
-		async (request) =>
+		async request =>
 			server.errorLog.listService({
 				projectId: request.params.projectId,
 				groupingName: request.query.groupingName,

@@ -2,7 +2,8 @@ import { FastifyPluginAsync } from 'fastify'
 import { createErrorLogSchema, errorLogSchema, TCreateErrorLogDto, TErrorLogDto } from './dto'
 
 const errorLogsRoute: FastifyPluginAsync = async server => {
-	server.post<{ Body: TCreateErrorLogDto, Reply: TErrorLogDto }>('/',
+	server.post<{ Body: TCreateErrorLogDto; Reply: TErrorLogDto }>(
+		'/',
 		{
 			schema: {
 				body: createErrorLogSchema,

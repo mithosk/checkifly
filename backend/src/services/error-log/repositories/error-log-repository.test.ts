@@ -16,8 +16,8 @@ describe('errorLog', () => {
 		}
 
 		let errorLogModel: {
-			create: jest.Mock,
-			find: jest.Mock,
+			create: jest.Mock
+			find: jest.Mock
 			countDocuments: jest.Mock
 		}
 
@@ -91,9 +91,11 @@ describe('errorLog', () => {
 				})
 
 				expect(errorLogModel.find).toHaveBeenCalledTimes(1)
-				expect(errorLogModel.find.mock.calls[0]).toEqual([{
-					projectId
-				}])
+				expect(errorLogModel.find.mock.calls[0]).toEqual([
+					{
+						projectId
+					}
+				])
 			})
 
 			it('search error logs filtered by groupingName', async () => {
@@ -104,9 +106,11 @@ describe('errorLog', () => {
 				})
 
 				expect(errorLogModel.find).toHaveBeenCalledTimes(1)
-				expect(errorLogModel.find.mock.calls[0]).toEqual([{
-					groupingName
-				}])
+				expect(errorLogModel.find.mock.calls[0]).toEqual([
+					{
+						groupingName
+					}
+				])
 			})
 
 			it('search error logs skipping records', async () => {
@@ -144,9 +148,11 @@ describe('errorLog', () => {
 				})
 
 				expect(errorLogModel.countDocuments).toHaveBeenCalledTimes(1)
-				expect(errorLogModel.countDocuments.mock.calls[0]).toEqual([{
-					projectId
-				}])
+				expect(errorLogModel.countDocuments.mock.calls[0]).toEqual([
+					{
+						projectId
+					}
+				])
 			})
 
 			it('count error logs filtered by groupingName', async () => {
@@ -157,9 +163,11 @@ describe('errorLog', () => {
 				})
 
 				expect(errorLogModel.countDocuments).toHaveBeenCalledTimes(1)
-				expect(errorLogModel.countDocuments.mock.calls[0]).toEqual([{
-					groupingName
-				}])
+				expect(errorLogModel.countDocuments.mock.calls[0]).toEqual([
+					{
+						groupingName
+					}
+				])
 			})
 		})
 	})

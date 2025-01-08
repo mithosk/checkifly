@@ -10,14 +10,12 @@ declare module 'fastify' {
 }
 
 const apiKeyAuthUtility: FastifyPluginAsync = async server => {
-	const apiKeyAuth: () =>
-		FastifyAuthFunction = () =>
-			async (request: FastifyRequest, response: FastifyReply) => {
-				const apiKey = request.headers['x-api-key']
+	const apiKeyAuth: () => FastifyAuthFunction =
+		() => async (request: FastifyRequest, response: FastifyReply) => {
+			const apiKey = request.headers['x-api-key']
 
-				if (!apiKey || apiKey !== getEnvParam('API_KEY'))
-					response.status(401).send()
-			}
+			if (!apiKey || apiKey !== getEnvParam('API_KEY')) response.status(401).send()
+		}
 
 	server.decorate('apiKeyAuth', apiKeyAuth)
 }

@@ -27,9 +27,7 @@ export interface IErrorLogRepository {
 }
 
 export class ErrorLogRepository implements IErrorLogRepository {
-	constructor(
-		private readonly errorLogModel: IMongooseModel<TErrorLog>
-	) { }
+	constructor(private readonly errorLogModel: IMongooseModel<TErrorLog>) {}
 
 	public create(data: TCreateErrorLogData): Promise<TErrorLogEntity> {
 		return this.errorLogModel.create({
@@ -42,7 +40,8 @@ export class ErrorLogRepository implements IErrorLogRepository {
 	}
 
 	public findMany(filter: TErrorLogFilter, skip?: number, take?: number): Promise<TErrorLogEntity[]> {
-		return this.errorLogModel.find(this.where(filter))
+		return this.errorLogModel
+			.find(this.where(filter))
 			.skip(skip ?? Number.MAX_VALUE)
 			.limit(take ?? Number.MAX_VALUE)
 	}
@@ -54,11 +53,9 @@ export class ErrorLogRepository implements IErrorLogRepository {
 	private where(filter: TErrorLogFilter): RootFilterQuery<TErrorLogFilter> {
 		const clause: RootFilterQuery<TErrorLogFilter> = {}
 
-		if (filter.projectId)
-			clause.projectId = filter.projectId
+		if (filter.projectId) clause.projectId = filter.projectId
 
-		if (filter.groupingName)
-			clause.groupingName = filter.groupingName
+		if (filter.groupingName) clause.groupingName = filter.groupingName
 
 		return clause
 	}
