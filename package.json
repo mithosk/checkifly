@@ -1,6 +1,5 @@
 {
   "name": "checkifly",
-  "version": "0.12.13",
   "description": "Application Monitoring",
   "scripts": {
     "docker": "docker compose down -v && docker compose up -d --force-recreate"
