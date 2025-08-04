@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { backendClient } from '@lib'
 import styles from './page.module.css'
 import { useEffect, useState } from 'react'
@@ -67,7 +68,7 @@ export default function Page() {
 
     useEffect(() => {
         getErrorLogGroups(params.id as string)
-    }, [])
+    }, [params.id])
 
     return (
         <table>
@@ -78,7 +79,7 @@ export default function Page() {
                             <tr key={item.groupingName}>
                                 <td className={getLevelCell(item.level)}></td>
                                 <td className={styles.hurryCell}>
-                                    <img src={getHurryImage(item.level, item.size)} className={styles.hurryImage} />
+                                    <Image src={getHurryImage(item.level, item.size)} width={30} height={30} alt="" />
                                 </td>
                                 <td className={styles.groupingNameCell}>
                                     {item.groupingName}
