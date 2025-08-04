@@ -1,6 +1,6 @@
 services:
   database:
-    image: mongo:8.0.4-noble
+    image: mongo:8.0.12-noble
     ports:
       - 27017:27017
     environment:

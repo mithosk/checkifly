@@ -11,6 +11,7 @@ export type TErrorLog = {
 		name: string
 		value: string
 	}[]
+	createdAt: Date
 }
 
 export const errorLogModel = model<TErrorLog>(
@@ -26,6 +27,7 @@ export const errorLogModel = model<TErrorLog>(
 				name: { type: String, required: true },
 				value: { type: String, required: true }
 			}
-		]
+		],
+		createdAt: { type: Date, default: () => new Date(), required: true }
 	})
 )

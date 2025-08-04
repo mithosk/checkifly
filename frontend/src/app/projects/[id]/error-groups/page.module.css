@@ -1,0 +1,37 @@
+.lowLevelCell {
+    width: 5px;
+    background-color: var(--low-level-color);
+}
+
+.mediumLevelCell {
+    width: 5px;
+    background-color: var(--medium-level-color);
+}
+
+.highLevelCell {
+    width: 5px;
+    background-color: var(--high-level-color);
+}
+
+.hurryCell {
+    width: 80px;
+    text-align: center;
+}
+
+.hurryImage {
+    width: 30px;
+}
+
+.groupingNameCell {
+    padding: 10px;
+}
+
+.dateCell {
+    width: 150px;
+    text-align: center;
+}
+
+.sizeCell {
+    width: 100px;
+    text-align: center;
+}

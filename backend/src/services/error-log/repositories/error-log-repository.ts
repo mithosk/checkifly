@@ -20,10 +20,20 @@ type TErrorLogFilter = {
 
 export type TErrorLogEntity = TErrorLog
 
+export type TGroupingNameGroup = {
+	projectId: string
+	groupingName: string
+	level: 'LOW' | 'MEDIUM' | 'HIGH'
+	size: number
+	date: Date
+}
+
 export interface IErrorLogRepository {
 	create(data: TCreateErrorLogData): Promise<TErrorLogEntity>
 	findMany(filter: TErrorLogFilter, skip?: number, take?: number): Promise<TErrorLogEntity[]>
 	count(filter: TErrorLogFilter): Promise<number>
+	groupForGroupingName(filter: TErrorLogFilter, skip?: number, take?: number): Promise<TGroupingNameGroup[]>
+	countForGroupingName(filter: TErrorLogFilter): Promise<number>
 }
 
 export class ErrorLogRepository implements IErrorLogRepository {
@@ -42,12 +52,96 @@ export class ErrorLogRepository implements IErrorLogRepository {
 	public findMany(filter: TErrorLogFilter, skip?: number, take?: number): Promise<TErrorLogEntity[]> {
 		return this.errorLogModel
 			.find(this.where(filter))
-			.skip(skip ?? Number.MAX_VALUE)
-			.limit(take ?? Number.MAX_VALUE)
+			.sort({ createdAt: -1 })
+			.skip(skip ?? 0)
+			.limit(take ?? Number.MAX_SAFE_INTEGER)
 	}
 
 	public count(filter: TErrorLogFilter): Promise<number> {
 		return this.errorLogModel.countDocuments(this.where(filter))
+	}
+
+	public groupForGroupingName(
+		filter: TErrorLogFilter,
+		skip?: number,
+		take?: number
+	): Promise<TGroupingNameGroup[]> {
+		return this.errorLogModel
+			.aggregate([
+				{
+					$match: this.where(filter)
+				},
+				{
+					$addFields: {
+						numericLevel: {
+							$switch: {
+								branches: [
+									{ case: { $eq: ['$level', 'LOW'] }, then: 1 },
+									{ case: { $eq: ['$level', 'MEDIUM'] }, then: 2 },
+									{ case: { $eq: ['$level', 'HIGH'] }, then: 3 }
+								],
+								default: 0
+							}
+						}
+					}
+				},
+				{
+					$group: {
+						_id: {
+							projectId: '$projectId',
+							groupingName: '$groupingName'
+						},
+						numericLevel: { $max: '$numericLevel' },
+						size: { $sum: 1 },
+						date: { $max: '$createdAt' }
+					}
+				},
+				{
+					$project: {
+						_id: 0,
+						projectId: '$_id.projectId',
+						groupingName: '$_id.groupingName',
+						level: {
+							$switch: {
+								branches: [
+									{ case: { $eq: ['$numericLevel', 1] }, then: 'LOW' },
+									{ case: { $eq: ['$numericLevel', 2] }, then: 'MEDIUM' },
+									{ case: { $eq: ['$numericLevel', 3] }, then: 'HIGH' }
+								],
+								default: ''
+							}
+						},
+						size: '$size',
+						date: '$date'
+					}
+				}
+			])
+			.sort({ date: -1 })
+			.skip(skip ?? 0)
+			.limit(take ?? Number.MAX_SAFE_INTEGER)
+	}
+
+	public async countForGroupingName(filter: TErrorLogFilter): Promise<number> {
+		return (
+			(
+				await this.errorLogModel.aggregate([
+					{
+						$match: this.where(filter)
+					},
+					{
+						$group: {
+							_id: {
+								projectId: '$projectId',
+								groupingName: '$groupingName'
+							}
+						}
+					},
+					{
+						$count: 'count'
+					}
+				])
+			)[0]?.count ?? 0
+		)
 	}
 
 	private where(filter: TErrorLogFilter): RootFilterQuery<TErrorLogFilter> {

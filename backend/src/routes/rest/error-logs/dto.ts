@@ -14,7 +14,8 @@ export const errorLogSchema = Type.Object({
 			name: Type.String(),
 			value: Type.String()
 		})
-	)
+	),
+	date: Type.String({ format: 'date-time' })
 })
 
 export type TErrorLogDto = Static<typeof errorLogSchema>

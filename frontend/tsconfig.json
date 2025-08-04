@@ -23,8 +23,8 @@
       }
     ],
     "paths": {
-      "@library": [
-        "./src/library"
+      "@lib": [
+        "./src/lib"
       ]
     },
     "strictNullChecks": true

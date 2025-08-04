@@ -15,7 +15,9 @@ describe('errorLog', () => {
 			errorLogRepository = {
 				create: jest.fn(),
 				findMany: jest.fn(),
-				count: jest.fn()
+				count: jest.fn(),
+				groupForGroupingName: jest.fn(),
+				countForGroupingName: jest.fn()
 			}
 
 			errorLogMap = jest.fn().mockReturnValue({
@@ -23,7 +25,7 @@ describe('errorLog', () => {
 				projectId: uuid(),
 				groupingName: 'aaaaa',
 				stackTrace: 'bbbbb',
-				level: 'HIGH',
+				level: 'LOW',
 				details: []
 			})
 
@@ -38,22 +40,23 @@ describe('errorLog', () => {
 		const errorLogFake: TErrorLogEntity = {
 			id: uuid(),
 			projectId: uuid(),
-			groupingName: 'aaaaa',
-			stackTrace: 'bbbbb',
-			level: 'HIGH',
+			groupingName: 'ccccc',
+			stackTrace: 'ddddd',
+			level: 'MEDIUM',
 			details: [
-				{
-					name: 'ccccc',
-					value: 'ddddd'
-				},
 				{
 					name: 'eeeee',
 					value: 'fffff'
+				},
+				{
+					name: 'ggggg',
+					value: 'hhhhh'
 				}
-			]
+			],
+			createdAt: new Date()
 		}
 
-		it('search all error logs', async () => {
+		it('searches all error logs', async () => {
 			errorLogRepository.findMany.mockResolvedValueOnce([errorLogFake])
 
 			await service({
@@ -65,7 +68,7 @@ describe('errorLog', () => {
 			expect(errorLogRepository.findMany.mock.calls[0][0]).toEqual({})
 		})
 
-		it('search error logs filtered by projectId', async () => {
+		it('searches error logs filtered by projectId', async () => {
 			const projectId = uuid()
 			errorLogRepository.findMany.mockResolvedValueOnce([errorLogFake])
 
@@ -81,7 +84,7 @@ describe('errorLog', () => {
 			})
 		})
 
-		it('search error logs filtered by groupingName', async () => {
+		it('searches error logs filtered by groupingName', async () => {
 			const groupingName = uuid()
 			errorLogRepository.findMany.mockResolvedValueOnce([errorLogFake])
 
@@ -97,7 +100,7 @@ describe('errorLog', () => {
 			})
 		})
 
-		it('count all error logs', async () => {
+		it('counts all error logs', async () => {
 			errorLogRepository.findMany.mockResolvedValueOnce([errorLogFake])
 
 			await service({
@@ -109,7 +112,7 @@ describe('errorLog', () => {
 			expect(errorLogRepository.count.mock.calls[0][0]).toEqual({})
 		})
 
-		it('count error logs filtered by projectId', async () => {
+		it('counts error logs filtered by projectId', async () => {
 			const projectId = uuid()
 			errorLogRepository.findMany.mockResolvedValueOnce([errorLogFake])
 
@@ -125,7 +128,7 @@ describe('errorLog', () => {
 			})
 		})
 
-		it('count error logs filtered by groupingName', async () => {
+		it('counts error logs filtered by groupingName', async () => {
 			const groupingName = uuid()
 			errorLogRepository.findMany.mockResolvedValueOnce([errorLogFake])
 
@@ -196,7 +199,7 @@ describe('errorLog', () => {
 		})
 
 		it('returns number of pages', async () => {
-			const pageCount = 12345
+			const pageCount = 54321
 			pager.pageCount.mockReturnValueOnce(pageCount)
 			errorLogRepository.findMany.mockResolvedValueOnce([errorLogFake])
 
@@ -209,7 +212,7 @@ describe('errorLog', () => {
 		})
 
 		it('returns number of items', async () => {
-			const itemCount = 12345
+			const itemCount = 54321
 			errorLogRepository.count.mockResolvedValueOnce(itemCount)
 			errorLogRepository.findMany.mockResolvedValueOnce([errorLogFake])
 

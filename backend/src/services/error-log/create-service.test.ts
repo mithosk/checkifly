@@ -13,7 +13,9 @@ describe('errorLog', () => {
 			errorLogRepository = {
 				create: jest.fn(),
 				findMany: jest.fn(),
-				count: jest.fn()
+				count: jest.fn(),
+				groupForGroupingName: jest.fn(),
+				countForGroupingName: jest.fn()
 			}
 
 			errorLogMap = jest.fn().mockReturnValue({
@@ -21,7 +23,7 @@ describe('errorLog', () => {
 				projectId: uuid(),
 				groupingName: 'aaaaa',
 				stackTrace: 'bbbbb',
-				level: 'HIGH',
+				level: 'LOW',
 				details: []
 			})
 
@@ -31,34 +33,35 @@ describe('errorLog', () => {
 		const errorLogFake: TErrorLogEntity = {
 			id: uuid(),
 			projectId: uuid(),
-			groupingName: 'aaaaa',
-			stackTrace: 'bbbbb',
-			level: 'HIGH',
+			groupingName: 'ccccc',
+			stackTrace: 'ddddd',
+			level: 'MEDIUM',
 			details: [
-				{
-					name: 'ccccc',
-					value: 'ddddd'
-				},
 				{
 					name: 'eeeee',
 					value: 'fffff'
+				},
+				{
+					name: 'ggggg',
+					value: 'hhhhh'
 				}
-			]
+			],
+			createdAt: new Date()
 		}
 
 		it('creates a new error log', async () => {
 			const projectId = uuid()
-			const groupingName = 'aaaaa'
-			const stackTrace = 'bbbbb'
+			const groupingName = 'iiiii'
+			const stackTrace = 'lllll'
 			const level = 'HIGH'
 			const details = [
 				{
-					name: 'ccccc',
-					value: 'ddddd'
+					name: 'mmmmm',
+					value: 'nnnnn'
 				},
 				{
-					name: 'eeeee',
-					value: 'fffff'
+					name: 'ooooo',
+					value: 'ppppp'
 				}
 			]
 
@@ -85,17 +88,17 @@ describe('errorLog', () => {
 
 			await service({
 				projectId: uuid(),
-				groupingName: 'aaaaa',
-				stackTrace: 'bbbbb',
+				groupingName: 'iiiii',
+				stackTrace: 'lllll',
 				level: 'HIGH',
 				details: [
 					{
-						name: 'ccccc',
-						value: 'ddddd'
+						name: 'mmmmm',
+						value: 'nnnnn'
 					},
 					{
-						name: 'eeeee',
-						value: 'fffff'
+						name: 'ooooo',
+						value: 'ppppp'
 					}
 				]
 			})
@@ -107,17 +110,17 @@ describe('errorLog', () => {
 		it('returns mapped result', async () => {
 			const result = await service({
 				projectId: uuid(),
-				groupingName: 'aaaaa',
-				stackTrace: 'bbbbb',
+				groupingName: 'iiiii',
+				stackTrace: 'lllll',
 				level: 'HIGH',
 				details: [
 					{
-						name: 'ccccc',
-						value: 'ddddd'
+						name: 'mmmmm',
+						value: 'nnnnn'
 					},
 					{
-						name: 'eeeee',
-						value: 'fffff'
+						name: 'ooooo',
+						value: 'ppppp'
 					}
 				]
 			})

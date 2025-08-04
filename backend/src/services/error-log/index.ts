@@ -6,12 +6,14 @@ import { FastifyPluginAsync } from 'fastify'
 import { createListService, IListService } from './list-service'
 import { createCreateService, ICreateService } from './create-service'
 import { ErrorLogRepository } from './repositories/error-log-repository'
+import { createGroupListService, IGroupListService } from './group-list-service'
 
 declare module 'fastify' {
 	interface FastifyInstance {
 		errorLog: {
 			createService: ICreateService
 			listService: IListService
+			groupListService: IGroupListService
 		}
 	}
 }
@@ -24,7 +26,8 @@ const errorLogService: FastifyPluginAsync = async server => {
 		fp(async () => {
 			server.decorate('errorLog', {
 				createService: createCreateService(errorLogRepository, errorLogMap),
-				listService: createListService(errorLogRepository, errorLogMap, pager)
+				listService: createListService(errorLogRepository, errorLogMap, pager),
+				groupListService: createGroupListService(errorLogRepository, pager)
 			})
 		})
 	)

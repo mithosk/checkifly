@@ -10,6 +10,7 @@ export type TErrorLogResult = {
 		name: string
 		value: string
 	}[]
+	date: string
 }
 
 export interface IErrorLogMap {
@@ -23,6 +24,7 @@ export const errorLogMap: IErrorLogMap = (entity: TErrorLogEntity): TErrorLogRes
 		groupingName: entity.groupingName,
 		stackTrace: entity.stackTrace,
 		level: entity.level,
-		details: entity.details
+		details: entity.details,
+		date: entity.createdAt.toISOString()
 	}
 }

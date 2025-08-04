@@ -19,10 +19,11 @@ describe('errorLog', () => {
 					name: 'eeeee',
 					value: 'fffff'
 				}
-			]
+			],
+			createdAt: new Date()
 		}
 
-		it('it maps entity to result', async () => {
+		it('maps entity to result', async () => {
 			const result = errorLogMap(errorLogFake)
 
 			expect(result).toEqual({
@@ -31,7 +32,8 @@ describe('errorLog', () => {
 				groupingName: errorLogFake.groupingName,
 				stackTrace: errorLogFake.stackTrace,
 				level: errorLogFake.level,
-				details: errorLogFake.details
+				details: errorLogFake.details,
+				date: errorLogFake.createdAt.toISOString()
 			})
 		})
 	})
