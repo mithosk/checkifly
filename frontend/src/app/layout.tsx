@@ -1,16 +1,19 @@
 import './global.css'
+import { EnvProvider } from '@components'
 
-export default function RootLayout({
-    children,
-}: {
-    children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+    const backendUrl = process.env.BACKEND_URL ?? ''
+
     return (
         <html>
             <head>
                 <title>checkifly</title>
             </head>
-            <body>{children}</body>
+            <body>
+                <EnvProvider backendUrl={backendUrl}>
+                    {children}
+                </EnvProvider>
+            </body>
         </html>
     )
 }

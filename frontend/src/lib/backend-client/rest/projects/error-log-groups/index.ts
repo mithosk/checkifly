@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import axios from 'axios'
-import { getEnvParam } from '@lib'
 
 const errorLogGroupSchema = z.object({
     projectId: z.string().uuid(),
@@ -18,10 +17,10 @@ const errorLogGroupsSchema = z.object({
 
 type TErrorLogGroupsDto = z.infer<typeof errorLogGroupsSchema>
 
-export const errorLogGroups = (projectId: string) => {
+export const errorLogGroups = (backendUrl: string, projectId: string) => {
     return {
         list: async (): Promise<TErrorLogGroupsDto> => {
-            const { data } = await axios.get<TErrorLogGroupsDto>(`${getEnvParam('NEXT_PUBLIC_BACKEND_URL')}/rest/projects/${projectId}/error-log-groups`)
+            const { data } = await axios.get<TErrorLogGroupsDto>(`${backendUrl}/rest/projects/${projectId}/error-log-groups`)
 
             errorLogGroupsSchema.parse(data)
 

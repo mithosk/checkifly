@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { GetEnv } from '@components'
 import { backendClient } from '@lib'
 import styles from './page.module.css'
 import { useEffect, useState } from 'react'
@@ -19,11 +20,12 @@ type TPageData = {
 }
 
 export default function Page() {
+    const env = GetEnv()
     const params = useParams()
     const [data, setData] = useState<TPageData>()
 
-    async function getErrorLogGroups(projectId: string) {
-        const response = await backendClient.rest.projects.errorLogGroups(projectId).list()
+    async function getErrorLogGroups(backendUrl: string, projectId: string) {
+        const response = await backendClient.rest.projects.errorLogGroups(backendUrl, projectId).list()
 
         const items = response.page.map(item => {
             return {
@@ -67,8 +69,8 @@ export default function Page() {
     }
 
     useEffect(() => {
-        getErrorLogGroups(params.id as string)
-    }, [params.id])
+        getErrorLogGroups(env.backendUrl, params.id as string)
+    }, [env.backendUrl, params.id])
 
     return (
         <table>
@@ -79,7 +81,7 @@ export default function Page() {
                             <tr key={item.groupingName}>
                                 <td className={getLevelCell(item.level)}></td>
                                 <td className={styles.hurryCell}>
-                                    <Image src={getHurryImage(item.level, item.size)} width={30} height={30} alt="" />
+                                    <Image src={getHurryImage(item.level, item.size)} width={30} height={30} alt='' />
                                 </td>
                                 <td className={styles.groupingNameCell}>
                                     {item.groupingName}
