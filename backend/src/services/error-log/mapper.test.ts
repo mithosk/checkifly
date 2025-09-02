@@ -8,6 +8,7 @@ describe('errorLog', () => {
 			id: uuid(),
 			projectId: uuid(),
 			groupingName: 'aaaaa',
+			groupingHash: 'XXXXXXXXXX',
 			stackTrace: 'bbbbb',
 			level: 'MEDIUM',
 			details: [
@@ -30,6 +31,7 @@ describe('errorLog', () => {
 				id: errorLogFake.id,
 				projectId: errorLogFake.projectId,
 				groupingName: errorLogFake.groupingName,
+				groupingHash: errorLogFake.groupingHash,
 				stackTrace: errorLogFake.stackTrace,
 				level: errorLogFake.level,
 				details: errorLogFake.details,

@@ -6,6 +6,7 @@ const errorLogSchema = Type.Object({
 	id: Type.String({ format: 'uuid' }),
 	projectId: Type.String({ format: 'uuid' }),
 	groupingName: Type.String({ minLength: 5 }),
+	groupingHash: Type.String({ minLength: 64, maxLength: 64 }),
 	stackTrace: Type.String({ minLength: 10 }),
 	level: Type.Union([Type.Literal('LOW'), Type.Literal('MEDIUM'), Type.Literal('HIGH')]),
 	details: Type.Array(
@@ -30,7 +31,8 @@ export type TErrorLogListParamsDto = Static<typeof errorLogListParamsSchema>
 //querystring
 export const errorLogQuerystringSchema = pagedQuerystringSchema(
 	Type.Object({
-		groupingName: Type.Optional(Type.String({ minLength: 5 }))
+		groupingName: Type.Optional(Type.String({ maxLength: 32 })),
+		groupingHash: Type.Optional(Type.String({ minLength: 64, maxLength: 64 }))
 	})
 )
 

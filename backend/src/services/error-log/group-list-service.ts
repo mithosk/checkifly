@@ -12,6 +12,7 @@ type TResult = {
 	page: {
 		projectId: string
 		groupingName: string
+		groupingHash: string
 		level: 'LOW' | 'MEDIUM' | 'HIGH'
 		size: number
 		date: string
@@ -32,19 +33,20 @@ export const createGroupListService =
 			groupingName: args.groupingName
 		}
 
-		const items = await errorLogRepository.groupForGroupingName(
+		const items = await errorLogRepository.groupForGroupingHash(
 			filter,
 			pager.skip(args.pageIndex, args.pageSize),
 			args.pageSize
 		)
 
-		const itemCount = await errorLogRepository.countForGroupingName(filter)
+		const itemCount = await errorLogRepository.countForGroupingHash(filter)
 
 		return {
 			page: items.map(item => {
 				return {
 					projectId: item.projectId,
 					groupingName: item.groupingName,
+					groupingHash: item.groupingHash,
 					level: item.level,
 					size: item.size,
 					date: item.date.toISOString()

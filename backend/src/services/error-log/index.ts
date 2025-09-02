@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { Pager } from '@library'
+import { hash, Pager } from '@library'
 import { errorLogMap } from './mapper'
 import { errorLogModel } from '@mongoose'
 import { FastifyPluginAsync } from 'fastify'
@@ -25,7 +25,7 @@ const errorLogService: FastifyPluginAsync = async server => {
 	server.register(
 		fp(async () => {
 			server.decorate('errorLog', {
-				createService: createCreateService(errorLogRepository, errorLogMap),
+				createService: createCreateService(errorLogRepository, errorLogMap, hash),
 				listService: createListService(errorLogRepository, errorLogMap, pager),
 				groupListService: createGroupListService(errorLogRepository, pager)
 			})

@@ -4,6 +4,7 @@ import axios from 'axios'
 const errorLogGroupSchema = z.object({
     projectId: z.string().uuid(),
     groupingName: z.string().min(5),
+    groupingHash: z.string().length(64),
     level: z.enum(['LOW', 'MEDIUM', 'HIGH']),
     size: z.number(),
     date: z.string().datetime()

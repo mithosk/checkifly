@@ -5,6 +5,7 @@ import { IErrorLogRepository } from './repositories/error-log-repository'
 type TArgs = {
 	projectId?: string
 	groupingName?: string
+	groupingHash?: string
 	pageIndex: number
 	pageSize: number
 }
@@ -24,7 +25,8 @@ export const createListService =
 	async (args: TArgs): Promise<TResult> => {
 		const filter = {
 			projectId: args.projectId,
-			groupingName: args.groupingName
+			groupingName: args.groupingName,
+			groupingHash: args.groupingHash
 		}
 
 		const items = await errorLogRepository.findMany(

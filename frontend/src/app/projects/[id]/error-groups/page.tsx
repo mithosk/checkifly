@@ -13,6 +13,7 @@ type TPageData = {
     items: {
         projectId: string
         groupingName: string
+        groupingHash: string
         level: TLevel
         size: number
         date: string
@@ -31,6 +32,7 @@ export default function Page() {
             return {
                 projectId: item.projectId,
                 groupingName: item.groupingName,
+                groupingHash: item.groupingHash,
                 level: item.level,
                 size: item.size,
                 date: item.date
@@ -78,7 +80,7 @@ export default function Page() {
                 {
                     data?.items.map(item => {
                         return (
-                            <tr key={item.groupingName}>
+                            <tr key={item.groupingHash}>
                                 <td className={getLevelCell(item.level)}></td>
                                 <td className={styles.hurryCell}>
                                     <Image src={getHurryImage(item.level, item.size)} width={30} height={30} alt='' />

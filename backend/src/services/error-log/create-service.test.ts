@@ -1,3 +1,4 @@
+import { IHash } from '@library'
 import { v4 as uuid } from 'uuid'
 import { IErrorLogMap } from './mapper'
 import { createCreateService, ICreateService } from './create-service'
@@ -8,32 +9,38 @@ describe('errorLog', () => {
 		let service: ICreateService
 		let errorLogRepository: jest.Mocked<IErrorLogRepository>
 		let errorLogMap: jest.Mocked<IErrorLogMap>
+		let hash: jest.Mocked<IHash>
 
 		beforeEach(() => {
 			errorLogRepository = {
 				create: jest.fn(),
 				findMany: jest.fn(),
 				count: jest.fn(),
-				groupForGroupingName: jest.fn(),
-				countForGroupingName: jest.fn()
+				groupForGroupingHash: jest.fn(),
+				countForGroupingHash: jest.fn()
 			}
 
 			errorLogMap = jest.fn().mockReturnValue({
 				id: uuid(),
 				projectId: uuid(),
 				groupingName: 'aaaaa',
+				groupingHash: 'XXXXXXXXXX',
 				stackTrace: 'bbbbb',
 				level: 'LOW',
-				details: []
+				details: [],
+				date: '20250901'
 			})
 
-			service = createCreateService(errorLogRepository, errorLogMap)
+			hash = jest.fn().mockImplementation(text => text)
+
+			service = createCreateService(errorLogRepository, errorLogMap, hash)
 		})
 
 		const errorLogFake: TErrorLogEntity = {
 			id: uuid(),
 			projectId: uuid(),
 			groupingName: 'ccccc',
+			groupingHash: 'YYYYYYYYYY',
 			stackTrace: 'ddddd',
 			level: 'MEDIUM',
 			details: [
@@ -48,6 +55,30 @@ describe('errorLog', () => {
 			],
 			createdAt: new Date()
 		}
+
+		it('creates hash for grouping name', async () => {
+			const groupingName = 'iiiii'
+
+			await service({
+				projectId: uuid(),
+				groupingName,
+				stackTrace: 'lllll',
+				level: 'HIGH',
+				details: [
+					{
+						name: 'mmmmm',
+						value: 'nnnnn'
+					},
+					{
+						name: 'ooooo',
+						value: 'ppppp'
+					}
+				]
+			})
+
+			expect(hash).toHaveBeenCalledTimes(1)
+			expect(hash).toHaveBeenCalledWith(groupingName)
+		})
 
 		it('creates a new error log', async () => {
 			const projectId = uuid()
@@ -77,6 +108,7 @@ describe('errorLog', () => {
 			expect(errorLogRepository.create.mock.calls[0][0]).toEqual({
 				projectId,
 				groupingName,
+				groupingHash: groupingName,
 				stackTrace,
 				level,
 				details

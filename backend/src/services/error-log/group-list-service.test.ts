@@ -1,7 +1,7 @@
 import { IPager } from '@library'
 import { v4 as uuid } from 'uuid'
 import { createGroupListService, IGroupListService } from './group-list-service'
-import { IErrorLogRepository, TGroupingNameGroup } from './repositories/error-log-repository'
+import { IErrorLogRepository, TGroupingHashGroup } from './repositories/error-log-repository'
 
 describe('errorLog', () => {
 	describe('groupListService', () => {
@@ -14,8 +14,8 @@ describe('errorLog', () => {
 				create: jest.fn(),
 				findMany: jest.fn(),
 				count: jest.fn(),
-				groupForGroupingName: jest.fn(),
-				countForGroupingName: jest.fn()
+				groupForGroupingHash: jest.fn(),
+				countForGroupingHash: jest.fn()
 			}
 
 			pager = {
@@ -26,29 +26,30 @@ describe('errorLog', () => {
 			service = createGroupListService(errorLogRepository, pager)
 		})
 
-		const groupingNameGroupFake: TGroupingNameGroup = {
+		const groupingHashFake: TGroupingHashGroup = {
 			projectId: uuid(),
 			groupingName: 'aaaaa',
+			groupingHash: 'XXXXXXXXXX',
 			level: 'LOW',
 			size: 12345,
 			date: new Date()
 		}
 
 		it('searches all error log groups', async () => {
-			errorLogRepository.groupForGroupingName.mockResolvedValueOnce([groupingNameGroupFake])
+			errorLogRepository.groupForGroupingHash.mockResolvedValueOnce([groupingHashFake])
 
 			await service({
 				pageIndex: 1,
 				pageSize: 30
 			})
 
-			expect(errorLogRepository.groupForGroupingName).toHaveBeenCalledTimes(1)
-			expect(errorLogRepository.groupForGroupingName.mock.calls[0][0]).toEqual({})
+			expect(errorLogRepository.groupForGroupingHash).toHaveBeenCalledTimes(1)
+			expect(errorLogRepository.groupForGroupingHash.mock.calls[0][0]).toEqual({})
 		})
 
 		it('searches error log groups filtered by projectId', async () => {
 			const projectId = uuid()
-			errorLogRepository.groupForGroupingName.mockResolvedValueOnce([groupingNameGroupFake])
+			errorLogRepository.groupForGroupingHash.mockResolvedValueOnce([groupingHashFake])
 
 			await service({
 				projectId,
@@ -56,15 +57,15 @@ describe('errorLog', () => {
 				pageSize: 30
 			})
 
-			expect(errorLogRepository.groupForGroupingName).toHaveBeenCalledTimes(1)
-			expect(errorLogRepository.groupForGroupingName.mock.calls[0][0]).toEqual({
+			expect(errorLogRepository.groupForGroupingHash).toHaveBeenCalledTimes(1)
+			expect(errorLogRepository.groupForGroupingHash.mock.calls[0][0]).toEqual({
 				projectId
 			})
 		})
 
 		it('searches error log groups filtered by groupingName', async () => {
 			const groupingName = uuid()
-			errorLogRepository.groupForGroupingName.mockResolvedValueOnce([groupingNameGroupFake])
+			errorLogRepository.groupForGroupingHash.mockResolvedValueOnce([groupingHashFake])
 
 			await service({
 				groupingName,
@@ -72,27 +73,27 @@ describe('errorLog', () => {
 				pageSize: 30
 			})
 
-			expect(errorLogRepository.groupForGroupingName).toHaveBeenCalledTimes(1)
-			expect(errorLogRepository.groupForGroupingName.mock.calls[0][0]).toEqual({
+			expect(errorLogRepository.groupForGroupingHash).toHaveBeenCalledTimes(1)
+			expect(errorLogRepository.groupForGroupingHash.mock.calls[0][0]).toEqual({
 				groupingName
 			})
 		})
 
 		it('counts all error log groups', async () => {
-			errorLogRepository.groupForGroupingName.mockResolvedValueOnce([groupingNameGroupFake])
+			errorLogRepository.groupForGroupingHash.mockResolvedValueOnce([groupingHashFake])
 
 			await service({
 				pageIndex: 1,
 				pageSize: 30
 			})
 
-			expect(errorLogRepository.countForGroupingName).toHaveBeenCalledTimes(1)
-			expect(errorLogRepository.countForGroupingName.mock.calls[0][0]).toEqual({})
+			expect(errorLogRepository.countForGroupingHash).toHaveBeenCalledTimes(1)
+			expect(errorLogRepository.countForGroupingHash.mock.calls[0][0]).toEqual({})
 		})
 
 		it('counts error log groups filtered by projectId', async () => {
 			const projectId = uuid()
-			errorLogRepository.groupForGroupingName.mockResolvedValueOnce([groupingNameGroupFake])
+			errorLogRepository.groupForGroupingHash.mockResolvedValueOnce([groupingHashFake])
 
 			await service({
 				projectId,
@@ -100,15 +101,15 @@ describe('errorLog', () => {
 				pageSize: 30
 			})
 
-			expect(errorLogRepository.countForGroupingName).toHaveBeenCalledTimes(1)
-			expect(errorLogRepository.countForGroupingName.mock.calls[0][0]).toEqual({
+			expect(errorLogRepository.countForGroupingHash).toHaveBeenCalledTimes(1)
+			expect(errorLogRepository.countForGroupingHash.mock.calls[0][0]).toEqual({
 				projectId
 			})
 		})
 
 		it('counts error log groups filtered by groupingName', async () => {
 			const groupingName = uuid()
-			errorLogRepository.groupForGroupingName.mockResolvedValueOnce([groupingNameGroupFake])
+			errorLogRepository.groupForGroupingHash.mockResolvedValueOnce([groupingHashFake])
 
 			await service({
 				groupingName,
@@ -116,8 +117,8 @@ describe('errorLog', () => {
 				pageSize: 30
 			})
 
-			expect(errorLogRepository.countForGroupingName).toHaveBeenCalledTimes(1)
-			expect(errorLogRepository.countForGroupingName.mock.calls[0][0]).toEqual({
+			expect(errorLogRepository.countForGroupingHash).toHaveBeenCalledTimes(1)
+			expect(errorLogRepository.countForGroupingHash.mock.calls[0][0]).toEqual({
 				groupingName
 			})
 		})
@@ -127,7 +128,7 @@ describe('errorLog', () => {
 			const pageSize = 30
 			const skip = 1000000
 			pager.skip.mockReturnValueOnce(skip)
-			errorLogRepository.groupForGroupingName.mockResolvedValueOnce([groupingNameGroupFake])
+			errorLogRepository.groupForGroupingHash.mockResolvedValueOnce([groupingHashFake])
 
 			await service({
 				pageIndex,
@@ -137,24 +138,24 @@ describe('errorLog', () => {
 			expect(pager.skip).toHaveBeenCalledTimes(1)
 			expect(pager.skip.mock.calls[0][0]).toBe(pageIndex)
 			expect(pager.skip.mock.calls[0][1]).toBe(pageSize)
-			expect(errorLogRepository.groupForGroupingName.mock.calls[0][1]).toBe(skip)
+			expect(errorLogRepository.groupForGroupingHash.mock.calls[0][1]).toBe(skip)
 		})
 
 		it('limits groups for pagination', async () => {
 			const pageSize = 30
-			errorLogRepository.groupForGroupingName.mockResolvedValueOnce([groupingNameGroupFake])
+			errorLogRepository.groupForGroupingHash.mockResolvedValueOnce([groupingHashFake])
 
 			await service({
 				pageIndex: 1,
 				pageSize
 			})
 
-			expect(errorLogRepository.groupForGroupingName).toHaveBeenCalledTimes(1)
-			expect(errorLogRepository.groupForGroupingName.mock.calls[0][2]).toBe(pageSize)
+			expect(errorLogRepository.groupForGroupingHash).toHaveBeenCalledTimes(1)
+			expect(errorLogRepository.groupForGroupingHash.mock.calls[0][2]).toBe(pageSize)
 		})
 
 		it('returns mapped page', async () => {
-			errorLogRepository.groupForGroupingName.mockResolvedValueOnce([groupingNameGroupFake])
+			errorLogRepository.groupForGroupingHash.mockResolvedValueOnce([groupingHashFake])
 
 			const result = await service({
 				pageIndex: 1,
@@ -163,11 +164,12 @@ describe('errorLog', () => {
 
 			expect(result.page).toEqual([
 				{
-					projectId: groupingNameGroupFake.projectId,
-					groupingName: groupingNameGroupFake.groupingName,
-					level: groupingNameGroupFake.level,
-					size: groupingNameGroupFake.size,
-					date: groupingNameGroupFake.date.toISOString()
+					projectId: groupingHashFake.projectId,
+					groupingName: groupingHashFake.groupingName,
+					groupingHash: groupingHashFake.groupingHash,
+					level: groupingHashFake.level,
+					size: groupingHashFake.size,
+					date: groupingHashFake.date.toISOString()
 				}
 			])
 		})
@@ -175,7 +177,7 @@ describe('errorLog', () => {
 		it('returns number of pages', async () => {
 			const pageCount = 54321
 			pager.pageCount.mockReturnValueOnce(pageCount)
-			errorLogRepository.groupForGroupingName.mockResolvedValueOnce([groupingNameGroupFake])
+			errorLogRepository.groupForGroupingHash.mockResolvedValueOnce([groupingHashFake])
 
 			const result = await service({
 				pageIndex: 1,
@@ -187,8 +189,8 @@ describe('errorLog', () => {
 
 		it('returns number of items', async () => {
 			const itemCount = 54321
-			errorLogRepository.countForGroupingName.mockResolvedValueOnce(itemCount)
-			errorLogRepository.groupForGroupingName.mockResolvedValueOnce([groupingNameGroupFake])
+			errorLogRepository.countForGroupingHash.mockResolvedValueOnce(itemCount)
+			errorLogRepository.groupForGroupingHash.mockResolvedValueOnce([groupingHashFake])
 
 			const result = await service({
 				pageIndex: 1,

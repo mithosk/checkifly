@@ -7,6 +7,7 @@ export const errorLogSchema = Type.Object({
 	id: Type.String({ format: 'uuid' }),
 	projectId: Type.String({ format: 'uuid' }),
 	groupingName: Type.String({ minLength: 5 }),
+	groupingHash: Type.String({ minLength: 64, maxLength: 64 }),
 	stackTrace: Type.String({ minLength: 10 }),
 	level,
 	details: Type.Array(

@@ -5,6 +5,7 @@ import { RootFilterQuery } from 'mongoose'
 type TCreateErrorLogData = {
 	projectId: string
 	groupingName: string
+	groupingHash: string
 	stackTrace: string
 	level: 'LOW' | 'MEDIUM' | 'HIGH'
 	details: {
@@ -16,13 +17,15 @@ type TCreateErrorLogData = {
 type TErrorLogFilter = {
 	projectId?: string
 	groupingName?: string
+	groupingHash?: string
 }
 
 export type TErrorLogEntity = TErrorLog
 
-export type TGroupingNameGroup = {
+export type TGroupingHashGroup = {
 	projectId: string
 	groupingName: string
+	groupingHash: string
 	level: 'LOW' | 'MEDIUM' | 'HIGH'
 	size: number
 	date: Date
@@ -32,8 +35,8 @@ export interface IErrorLogRepository {
 	create(data: TCreateErrorLogData): Promise<TErrorLogEntity>
 	findMany(filter: TErrorLogFilter, skip?: number, take?: number): Promise<TErrorLogEntity[]>
 	count(filter: TErrorLogFilter): Promise<number>
-	groupForGroupingName(filter: TErrorLogFilter, skip?: number, take?: number): Promise<TGroupingNameGroup[]>
-	countForGroupingName(filter: TErrorLogFilter): Promise<number>
+	groupForGroupingHash(filter: TErrorLogFilter, skip?: number, take?: number): Promise<TGroupingHashGroup[]>
+	countForGroupingHash(filter: TErrorLogFilter): Promise<number>
 }
 
 export class ErrorLogRepository implements IErrorLogRepository {
@@ -43,6 +46,7 @@ export class ErrorLogRepository implements IErrorLogRepository {
 		return this.errorLogModel.create({
 			projectId: data.projectId,
 			groupingName: data.groupingName,
+			groupingHash: data.groupingHash,
 			stackTrace: data.stackTrace,
 			level: data.level,
 			details: data.details
@@ -61,11 +65,11 @@ export class ErrorLogRepository implements IErrorLogRepository {
 		return this.errorLogModel.countDocuments(this.where(filter))
 	}
 
-	public groupForGroupingName(
+	public groupForGroupingHash(
 		filter: TErrorLogFilter,
 		skip?: number,
 		take?: number
-	): Promise<TGroupingNameGroup[]> {
+	): Promise<TGroupingHashGroup[]> {
 		return this.errorLogModel
 			.aggregate([
 				{
@@ -89,8 +93,9 @@ export class ErrorLogRepository implements IErrorLogRepository {
 					$group: {
 						_id: {
 							projectId: '$projectId',
-							groupingName: '$groupingName'
+							groupingHash: '$groupingHash'
 						},
+						groupingName: { $first: '$groupingName' },
 						numericLevel: { $max: '$numericLevel' },
 						size: { $sum: 1 },
 						date: { $max: '$createdAt' }
@@ -100,7 +105,8 @@ export class ErrorLogRepository implements IErrorLogRepository {
 					$project: {
 						_id: 0,
 						projectId: '$_id.projectId',
-						groupingName: '$_id.groupingName',
+						groupingName: '$groupingName',
+						groupingHash: '$_id.groupingHash',
 						level: {
 							$switch: {
 								branches: [
@@ -121,7 +127,7 @@ export class ErrorLogRepository implements IErrorLogRepository {
 			.limit(take ?? Number.MAX_SAFE_INTEGER)
 	}
 
-	public async countForGroupingName(filter: TErrorLogFilter): Promise<number> {
+	public async countForGroupingHash(filter: TErrorLogFilter): Promise<number> {
 		return (
 			(
 				await this.errorLogModel.aggregate([
@@ -132,7 +138,7 @@ export class ErrorLogRepository implements IErrorLogRepository {
 						$group: {
 							_id: {
 								projectId: '$projectId',
-								groupingName: '$groupingName'
+								groupingHash: '$groupingHash'
 							}
 						}
 					},
@@ -149,7 +155,13 @@ export class ErrorLogRepository implements IErrorLogRepository {
 
 		if (filter.projectId) clause.projectId = filter.projectId
 
-		if (filter.groupingName) clause.groupingName = filter.groupingName
+		if (filter.groupingName)
+			clause.groupingName = {
+				$regex: filter.groupingName,
+				$options: 'i'
+			}
+
+		if (filter.groupingHash) clause.groupingHash = filter.groupingHash
 
 		return clause
 	}

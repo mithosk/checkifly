@@ -5,6 +5,7 @@ import { pagedQuerystringSchema, pagedResponseSchema } from '@library'
 const errorLogGroupSchema = Type.Object({
 	projectId: Type.String({ format: 'uuid' }),
 	groupingName: Type.String({ minLength: 5 }),
+	groupingHash: Type.String({ minLength: 64, maxLength: 64 }),
 	level: Type.Union([Type.Literal('LOW'), Type.Literal('MEDIUM'), Type.Literal('HIGH')]),
 	size: Type.Number(),
 	date: Type.String({ format: 'date-time' })
@@ -23,7 +24,7 @@ export type TErrorLogGroupListParamsDto = Static<typeof errorLogGroupListParamsS
 //querystring
 export const errorLogGroupQuerystringSchema = pagedQuerystringSchema(
 	Type.Object({
-		groupingName: Type.Optional(Type.String({ minLength: 5 }))
+		groupingName: Type.Optional(Type.String({ maxLength: 32 }))
 	})
 )
 

@@ -16,17 +16,19 @@ describe('errorLog', () => {
 				create: jest.fn(),
 				findMany: jest.fn(),
 				count: jest.fn(),
-				groupForGroupingName: jest.fn(),
-				countForGroupingName: jest.fn()
+				groupForGroupingHash: jest.fn(),
+				countForGroupingHash: jest.fn()
 			}
 
 			errorLogMap = jest.fn().mockReturnValue({
 				id: uuid(),
 				projectId: uuid(),
 				groupingName: 'aaaaa',
+				groupingHash: 'XXXXXXXXXX',
 				stackTrace: 'bbbbb',
 				level: 'LOW',
-				details: []
+				details: [],
+				date: '20250902'
 			})
 
 			pager = {
@@ -41,6 +43,7 @@ describe('errorLog', () => {
 			id: uuid(),
 			projectId: uuid(),
 			groupingName: 'ccccc',
+			groupingHash: 'YYYYYYYYYY',
 			stackTrace: 'ddddd',
 			level: 'MEDIUM',
 			details: [
@@ -100,6 +103,22 @@ describe('errorLog', () => {
 			})
 		})
 
+		it('searches error logs filtered by groupingHash', async () => {
+			const groupingHash = uuid()
+			errorLogRepository.findMany.mockResolvedValueOnce([errorLogFake])
+
+			await service({
+				groupingHash,
+				pageIndex: 1,
+				pageSize: 30
+			})
+
+			expect(errorLogRepository.findMany).toHaveBeenCalledTimes(1)
+			expect(errorLogRepository.findMany.mock.calls[0][0]).toEqual({
+				groupingHash
+			})
+		})
+
 		it('counts all error logs', async () => {
 			errorLogRepository.findMany.mockResolvedValueOnce([errorLogFake])
 
@@ -141,6 +160,22 @@ describe('errorLog', () => {
 			expect(errorLogRepository.count).toHaveBeenCalledTimes(1)
 			expect(errorLogRepository.count.mock.calls[0][0]).toEqual({
 				groupingName
+			})
+		})
+
+		it('counts error logs filtered by groupingHash', async () => {
+			const groupingHash = uuid()
+			errorLogRepository.findMany.mockResolvedValueOnce([errorLogFake])
+
+			await service({
+				groupingHash,
+				pageIndex: 1,
+				pageSize: 30
+			})
+
+			expect(errorLogRepository.count).toHaveBeenCalledTimes(1)
+			expect(errorLogRepository.count.mock.calls[0][0]).toEqual({
+				groupingHash
 			})
 		})
 

@@ -24,6 +24,7 @@ const errorLogsRoute: FastifyPluginAsync = async server => {
 			server.errorLog.listService({
 				projectId: request.params.projectId,
 				groupingName: request.query.groupingName,
+				groupingHash: request.query.groupingHash,
 				pageIndex: request.query.pageIndex,
 				pageSize: request.query.pageSize
 			})

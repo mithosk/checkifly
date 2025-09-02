@@ -43,6 +43,7 @@ describe('errorLog', () => {
 			it('creates a new error log', async () => {
 				const projectId = uuid()
 				const groupingName = 'aaaaa'
+				const groupingHash = 'XXXXXXXXXX'
 				const stackTrace = 'bbbbb'
 				const level = 'LOW'
 				const details = [
@@ -59,6 +60,7 @@ describe('errorLog', () => {
 				await repository.create({
 					projectId,
 					groupingName,
+					groupingHash,
 					stackTrace,
 					level,
 					details
@@ -68,6 +70,7 @@ describe('errorLog', () => {
 				expect(errorLogModel.create.mock.calls[0][0]).toEqual({
 					projectId,
 					groupingName,
+					groupingHash,
 					stackTrace,
 					level,
 					details
@@ -108,7 +111,25 @@ describe('errorLog', () => {
 				expect(errorLogModel.find).toHaveBeenCalledTimes(1)
 				expect(errorLogModel.find.mock.calls[0]).toEqual([
 					{
-						groupingName
+						groupingName: {
+							$regex: groupingName,
+							$options: 'i'
+						}
+					}
+				])
+			})
+
+			it('searches error logs filtered by groupingHash', async () => {
+				const groupingHash = uuid()
+
+				await repository.findMany({
+					groupingHash
+				})
+
+				expect(errorLogModel.find).toHaveBeenCalledTimes(1)
+				expect(errorLogModel.find.mock.calls[0]).toEqual([
+					{
+						groupingHash
 					}
 				])
 			})
@@ -172,29 +193,47 @@ describe('errorLog', () => {
 				expect(errorLogModel.countDocuments).toHaveBeenCalledTimes(1)
 				expect(errorLogModel.countDocuments.mock.calls[0]).toEqual([
 					{
-						groupingName
+						groupingName: {
+							$regex: groupingName,
+							$options: 'i'
+						}
+					}
+				])
+			})
+
+			it('counts error logs filtered by groupingHash', async () => {
+				const groupingHash = uuid()
+
+				await repository.count({
+					groupingHash
+				})
+
+				expect(errorLogModel.countDocuments).toHaveBeenCalledTimes(1)
+				expect(errorLogModel.countDocuments.mock.calls[0]).toEqual([
+					{
+						groupingHash
 					}
 				])
 			})
 		})
 
-		describe('groupForGroupingName', () => {
-			it('groups logs by projectId and groupingName', async () => {
-				await repository.groupForGroupingName({})
+		describe('groupForGroupingHash', () => {
+			it('groups logs by projectId and groupingHash', async () => {
+				await repository.groupForGroupingHash({})
 
 				expect(errorLogModel.aggregate).toHaveBeenCalledTimes(1)
 				expect(errorLogModel.aggregate.mock.calls[0][0][2]).toMatchObject({
 					$group: {
 						_id: {
 							projectId: '$projectId',
-							groupingName: '$groupingName'
+							groupingHash: '$groupingHash'
 						}
 					}
 				})
 			})
 
 			it('searches all error log groups', async () => {
-				await repository.groupForGroupingName({})
+				await repository.groupForGroupingHash({})
 
 				expect(errorLogModel.aggregate).toHaveBeenCalledTimes(1)
 				expect(errorLogModel.aggregate.mock.calls[0][0][0]).toEqual({ $match: {} })
@@ -203,7 +242,7 @@ describe('errorLog', () => {
 			it('searches error log groups filtered by projectId', async () => {
 				const projectId = uuid()
 
-				await repository.groupForGroupingName({
+				await repository.groupForGroupingHash({
 					projectId
 				})
 
@@ -218,20 +257,38 @@ describe('errorLog', () => {
 			it('searches error log groups filtered by groupingName', async () => {
 				const groupingName = uuid()
 
-				await repository.groupForGroupingName({
+				await repository.groupForGroupingHash({
 					groupingName
 				})
 
 				expect(errorLogModel.aggregate).toHaveBeenCalledTimes(1)
 				expect(errorLogModel.aggregate.mock.calls[0][0][0]).toEqual({
 					$match: {
-						groupingName
+						groupingName: {
+							$regex: groupingName,
+							$options: 'i'
+						}
+					}
+				})
+			})
+
+			it('searches error log groups filtered by groupingHash', async () => {
+				const groupingHash = uuid()
+
+				await repository.groupForGroupingHash({
+					groupingHash
+				})
+
+				expect(errorLogModel.aggregate).toHaveBeenCalledTimes(1)
+				expect(errorLogModel.aggregate.mock.calls[0][0][0]).toEqual({
+					$match: {
+						groupingHash
 					}
 				})
 			})
 
 			it('sorts error log groups by date', async () => {
-				await repository.groupForGroupingName({})
+				await repository.groupForGroupingHash({})
 
 				expect(errorLogModel.aggregate().sort).toHaveBeenCalledTimes(1)
 				expect(errorLogModel.aggregate().sort.mock.calls[0]).toEqual([{ date: -1 }])
@@ -240,7 +297,7 @@ describe('errorLog', () => {
 			it('searches error log groups skipping records', async () => {
 				const skip = 12345
 
-				await repository.groupForGroupingName({}, skip)
+				await repository.groupForGroupingHash({}, skip)
 
 				expect(errorLogModel.aggregate().sort().skip).toHaveBeenCalledTimes(1)
 				expect(errorLogModel.aggregate().sort().skip.mock.calls[0]).toEqual([skip])
@@ -249,30 +306,30 @@ describe('errorLog', () => {
 			it('searches error log groups limiting records', async () => {
 				const limit = 54321
 
-				await repository.groupForGroupingName({}, 11111, limit)
+				await repository.groupForGroupingHash({}, 11111, limit)
 
 				expect(errorLogModel.aggregate().sort().skip().limit).toHaveBeenCalledTimes(1)
 				expect(errorLogModel.aggregate().sort().skip().limit.mock.calls[0]).toEqual([limit])
 			})
 		})
 
-		describe('countForGroupingName', () => {
-			it('groups logs by projectId and groupingName', async () => {
-				await repository.countForGroupingName({})
+		describe('countForGroupingHash', () => {
+			it('groups logs by projectId and groupingHash', async () => {
+				await repository.countForGroupingHash({})
 
 				expect(errorLogModel.aggregate).toHaveBeenCalledTimes(1)
 				expect(errorLogModel.aggregate.mock.calls[0][0][1]).toMatchObject({
 					$group: {
 						_id: {
 							projectId: '$projectId',
-							groupingName: '$groupingName'
+							groupingHash: '$groupingHash'
 						}
 					}
 				})
 			})
 
 			it('counts all error log groups', async () => {
-				await repository.countForGroupingName({})
+				await repository.countForGroupingHash({})
 
 				expect(errorLogModel.aggregate).toHaveBeenCalledTimes(1)
 				expect(errorLogModel.aggregate.mock.calls[0][0][0]).toEqual({ $match: {} })
@@ -281,7 +338,7 @@ describe('errorLog', () => {
 			it('counts error log groups filtered by projectId', async () => {
 				const projectId = uuid()
 
-				await repository.countForGroupingName({
+				await repository.countForGroupingHash({
 					projectId
 				})
 
@@ -296,14 +353,32 @@ describe('errorLog', () => {
 			it('counts error log groups filtered by groupingName', async () => {
 				const groupingName = uuid()
 
-				await repository.countForGroupingName({
+				await repository.countForGroupingHash({
 					groupingName
 				})
 
 				expect(errorLogModel.aggregate).toHaveBeenCalledTimes(1)
 				expect(errorLogModel.aggregate.mock.calls[0][0][0]).toEqual({
 					$match: {
-						groupingName
+						groupingName: {
+							$regex: groupingName,
+							$options: 'i'
+						}
+					}
+				})
+			})
+
+			it('counts error log groups filtered by groupingHash', async () => {
+				const groupingHash = uuid()
+
+				await repository.countForGroupingHash({
+					groupingHash
+				})
+
+				expect(errorLogModel.aggregate).toHaveBeenCalledTimes(1)
+				expect(errorLogModel.aggregate.mock.calls[0][0][0]).toEqual({
+					$match: {
+						groupingHash
 					}
 				})
 			})
