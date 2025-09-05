@@ -18,10 +18,10 @@ declare module 'fastify' {
 	}
 }
 
-const errorLogRepository = new ErrorLogRepository(errorLogModel)
-const pager = new Pager()
-
 const errorLogService: FastifyPluginAsync = async server => {
+	const errorLogRepository = new ErrorLogRepository(errorLogModel)
+	const pager = new Pager()
+
 	server.register(
 		fp(async () => {
 			server.decorate('errorLog', {
