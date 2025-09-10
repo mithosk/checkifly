@@ -2,6 +2,6 @@
   "name": "checkifly",
   "description": "Free Application Monitoring",
   "scripts": {
-    "docker": "docker compose down -v && docker compose up -d --force-recreate"
+    "docker": "docker compose down -v && docker compose pull && docker compose up -d --build --force-recreate",
   }
 }
