@@ -1,5 +1,6 @@
 :root {
     --background-base-color: #f5f6f9;
+    --border-base-color: #cfcaca;
     --low-level-color: #47da08;
     --medium-level-color: #08beda;
     --high-level-color: #da08b3;
@@ -33,4 +34,26 @@ tr:hover {
 
 td {
     height: 52px;
+}
+
+button {
+    min-width: 65px;
+    height: 30px;
+    padding: 5px;
+    border: 2px solid #545353;
+    border-radius: 4px;
+    font-size: 10px;
+    color: #545353;
+    background-color: #e3e4e8;
+    cursor: pointer;
+}
+
+button:hover:enabled {
+    background-color: var(--background-base-color);
+}
+
+button:disabled {
+    border: 2px solid #ababab;
+    color: #ababab;
+    cursor: default;
 }

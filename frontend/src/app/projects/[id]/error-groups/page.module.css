@@ -1,3 +1,12 @@
+.tableContainer {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 40px;
+    overflow: scroll;
+}
+
 .lowLevelCell {
     width: 5px;
     background-color: var(--low-level-color);
@@ -30,4 +39,41 @@
 .sizeCell {
     width: 100px;
     text-align: center;
+}
+
+.footer {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    height: 39px;
+    bottom: 0px;
+    border-top: 1px solid var(--border-base-color);
+}
+
+.itemCountLabel {
+    position: absolute;
+    left: 20px;
+    top: 12px;
+    font-size: 12px;
+}
+
+.paginationLabel {
+    position: absolute;
+    right: 300px;
+    top: 12px;
+    font-size: 12px;
+}
+
+.decreasePaginationButton {
+    position: absolute;
+    right: 92px;
+    top: 4px;
+    font-size: 12px;
+}
+
+.increasePaginationButton {
+    position: absolute;
+    right: 20px;
+    top: 4px;
+    font-size: 12px;
 }

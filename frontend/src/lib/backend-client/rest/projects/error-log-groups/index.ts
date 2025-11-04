@@ -18,10 +18,10 @@ const errorLogGroupsSchema = z.object({
 
 type TErrorLogGroupsDto = z.infer<typeof errorLogGroupsSchema>
 
-export const errorLogGroups = (backendUrl: string, projectId: string) => {
+export const errorLogGroups = (backendUrl: string, projectId: string, pageIndex: number) => {
     return {
         list: async (): Promise<TErrorLogGroupsDto> => {
-            const { data } = await axios.get<TErrorLogGroupsDto>(`${backendUrl}/rest/projects/${projectId}/error-log-groups`)
+            const { data } = await axios.get<TErrorLogGroupsDto>(`${backendUrl}/rest/projects/${projectId}/error-log-groups?pageIndex=${pageIndex}`)
 
             errorLogGroupsSchema.parse(data)
 
